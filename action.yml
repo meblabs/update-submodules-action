@@ -32,7 +32,7 @@ runs:
       uses: actions/checkout@master
       with:
         repository: ${{ inputs.parent }}
-        token: ${{ secrets.PAT }}
+        token: ${{ inputs.PAT }}
         submodules: 'recursive'
         ref: ${{ steps.extract_branch.outputs.branch }}
         fetch-depth: 0
