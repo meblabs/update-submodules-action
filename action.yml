@@ -30,7 +30,6 @@ runs:
 
     - name: Checkout parent
       uses: actions/checkout@master
-      shell: bash
       with:
         repository: ${{ inputs.parent }}
         token: ${{ secrets.PAT }}
