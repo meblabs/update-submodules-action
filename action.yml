@@ -1,0 +1,62 @@
+name: UpdateSubmodules
+description: GitHub action for updating references to submodules in parent repo
+
+inputs:
+  commit_message:
+    description: "Message used when commits are created"
+    required: false
+    default: "chore: Update Submodules [skip ci]"
+
+  parent:
+    description: "Repo that must be updated"
+    required: true
+
+  submodules:
+    description: |
+      List of all the submodules contained in the parent repo, including the current one.
+      Eg: Api, FrontEnd
+
+  PAT:
+    description: "Personal Access Token with rights to push the parents repos"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+
+    - name: Checkout parent
+      uses: actions/checkout@master
+      with:
+        repository: ${{ inputs.parent }}
+        token: ${{ secrets.PAT }}
+        submodules: 'recursive'
+        ref: ${{ steps.extract_branch.outputs.branch }}
+        fetch-depth: 0
+
+    - name: Update submodules
+      run: git submodule update --remote --recursive
+
+    - name: Switch to updated branch
+      shell: bash
+      run: |
+        IFS=', ' read -r -a array <<< "${{ inputs.submodules }}"
+        for submod in "${array[@]}"
+        do
+          cd $submod  
+          git checkout ${GITHUB_REF#refs/heads/}
+          cd ..
+        done
+
+    - name: Create update commit
+      run: |
+        git config --global user.email "github@meblabs.com"
+        git config --global user.name "MeblabsBot"
+        git add --all
+        git commit -m ${{ inputs.commit_message }}
+        git push
+
+    
