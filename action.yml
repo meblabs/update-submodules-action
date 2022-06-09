@@ -58,7 +58,7 @@ runs:
         git config --global user.email "github@meblabs.com"
         git config --global user.name "MeblabsBot"
         git add --all
-        git commit -m ${{ inputs.commit_message }}
+        git commit -m "${{ inputs.commit_message }}"
         git push
 
     
