@@ -30,6 +30,7 @@ runs:
 
     - name: Checkout parent
       uses: actions/checkout@master
+      shell: bash
       with:
         repository: ${{ inputs.parent }}
         token: ${{ secrets.PAT }}
@@ -38,6 +39,7 @@ runs:
         fetch-depth: 0
 
     - name: Update submodules
+      shell: bash
       run: git submodule update --remote --recursive
 
     - name: Switch to updated branch
@@ -52,6 +54,7 @@ runs:
         done
 
     - name: Create update commit
+      shell: bash
       run: |
         git config --global user.email "github@meblabs.com"
         git config --global user.name "MeblabsBot"
