@@ -59,6 +59,7 @@ runs:
         git config --global user.name "MeblabsBot"
         git add --all
         git commit -m "${{ inputs.commit_message }}"
+        git pull
         git push
 
     
