@@ -22,7 +22,7 @@ jobs:
         with:
           parent: Blackfin-Eyewear/HyperFarm
           token: ${{ secrets.MEBBOT }}
-		  commit_message: "chore: Update Api [skip ci]"
+          commit_message: "chore: Update Api [skip ci]"
 ```
 
 If there are multiple parents to update you can use the matrix strategy to run multiple jobs
