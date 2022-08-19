@@ -2,23 +2,16 @@ name: UpdateSubmodules
 description: GitHub action for updating references to submodules in parent repo
 
 inputs:
+  parent:
+    description: "Repo that must be updated"
+    required: true
+  token:
+    description: "Personal Access Token with rights to push the parents repos"
+    required: true
   commit_message:
     description: "Message used when commits are created"
     required: false
     default: "chore: Update Submodules [skip ci]"
-
-  parent:
-    description: "Repo that must be updated"
-    required: true
-
-  submodules:
-    description: |
-      List of all the submodules contained in the parent repo, including the current one.
-      Eg: Api, FrontEnd
-
-  PAT:
-    description: "Personal Access Token with rights to push the parents repos"
-    required: true
 
 runs:
   using: composite
@@ -29,10 +22,10 @@ runs:
       id: extract_branch
 
     - name: Checkout parent
-      uses: actions/checkout@master
+      uses: actions/checkout@v3
       with:
         repository: ${{ inputs.parent }}
-        token: ${{ inputs.PAT }}
+        token: ${{ inputs.token }}
         submodules: 'recursive'
         ref: ${{ steps.extract_branch.outputs.branch }}
         fetch-depth: 0
@@ -41,16 +34,9 @@ runs:
       shell: bash
       run: git submodule update --remote --recursive
 
-    - name: Switch to updated branch
+    - name: Switch to updated branch for each submodule
       shell: bash
-      run: |
-        IFS=', ' read -r -a array <<< "${{ inputs.submodules }}"
-        for submod in "${array[@]}"
-        do
-          cd $submod  
-          git checkout ${GITHUB_REF#refs/heads/}
-          cd ..
-        done
+      run: git submodule foreach git checkout ${GITHUB_REF#refs/heads/}
 
     - name: Create update commit
       shell: bash
@@ -61,5 +47,3 @@ runs:
         git diff-index --quiet HEAD || git commit -m "${{ inputs.commit_message }}"
         git pull
         git push
-
-    

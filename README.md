@@ -18,12 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Update parent
-        uses: meblabs/update-submodules-action@main
+        uses: meblabs/update-submodules-action@v2.0
         with:
-          commit_message: "chore: Update Api [skip ci]"
           parent: Blackfin-Eyewear/HyperFarm
-          PAT: ${{ secrets.MEBBOT }}
-          submodules: Api, FrontEnd
+          token: ${{ secrets.MEBBOT }}
+		  commit_message: "chore: Update Api [skip ci]"
 ```
 
 If there are multiple parents to update you can use the matrix strategy to run multiple jobs
