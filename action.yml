@@ -43,6 +43,7 @@ runs:
       run: |
         git config --global user.email "github@meblabs.com"
         git config --global user.name "MeblabsBot"
+        git config --global pull.rebase true
         git add --all
         git diff-index --quiet HEAD || git commit -m "${{ inputs.commit_message }}"
         git pull
