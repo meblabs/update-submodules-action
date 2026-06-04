@@ -22,7 +22,7 @@ runs:
       id: extract_branch
 
     - name: Checkout parent
-      uses: actions/checkout@v6
+      uses: actions/checkout@v6.0.2
       with:
         repository: ${{ inputs.parent }}
         token: ${{ inputs.token }}
