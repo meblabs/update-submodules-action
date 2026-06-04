@@ -1,6 +1,12 @@
 # update-submodules-action
 
+[![zizmor](https://github.com/meblabs/update-submodules-action/actions/workflows/zizmor.yml/badge.svg)](https://github.com/meblabs/update-submodules-action/actions/workflows/zizmor.yml)
+
 GitHub action for updating references to submodules in parent repo
+
+> [!IMPORTANT]
+> This action relies on `actions/checkout@v6`, which runs on the Node 24 runtime.
+> Use it on `ubuntu-latest` or a self-hosted runner with agent `>= v2.327.1`.
 
 ## How to use
 
@@ -18,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Update parent
-        uses: meblabs/update-submodules-action@v2.0
+        uses: meblabs/update-submodules-action@v3
         with:
           parent: Blackfin-Eyewear/HyperFarm
           token: ${{ secrets.MEBBOT }}

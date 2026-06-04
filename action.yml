@@ -22,7 +22,7 @@ runs:
       id: extract_branch
 
     - name: Checkout parent
-      uses: actions/checkout@v3
+      uses: actions/checkout@v6
       with:
         repository: ${{ inputs.parent }}
         token: ${{ inputs.token }}
@@ -40,11 +40,13 @@ runs:
 
     - name: Create update commit
       shell: bash
+      env:
+        COMMIT_MESSAGE: ${{ inputs.commit_message }}
       run: |
         git config --global user.email "github@meblabs.com"
         git config --global user.name "MeblabsBot"
         git config --global pull.rebase true
         git add --all
-        git diff-index --quiet HEAD || git commit -m "${{ inputs.commit_message }}"
+        git diff-index --quiet HEAD || git commit -m "$COMMIT_MESSAGE"
         git pull
         git push
