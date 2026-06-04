@@ -21,8 +21,13 @@ runs:
       run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
       id: extract_branch
 
+    # artipacked is intentionally allowed here: the persisted credentials are
+    # required by the later steps (git submodule update --remote, git pull,
+    # git push) to authenticate against the parent repo and its submodules.
+    # The leak vector artipacked warns about (uploading .git as an artifact)
+    # does not exist: this action never uploads artifacts.
     - name: Checkout parent
-      uses: actions/checkout@v6.0.2
+      uses: actions/checkout@v6.0.2 # zizmor: ignore[artipacked]
       with:
         repository: ${{ inputs.parent }}
         token: ${{ inputs.token }}
