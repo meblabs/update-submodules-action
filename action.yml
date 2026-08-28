@@ -27,7 +27,7 @@ runs:
     # The leak vector artipacked warns about (uploading .git as an artifact)
     # does not exist: this action never uploads artifacts.
     - name: Checkout parent
-      uses: actions/checkout@v6.0.3 # zizmor: ignore[artipacked]
+      uses: actions/checkout@v7.0.1 # zizmor: ignore[artipacked]
       with:
         repository: ${{ inputs.parent }}
         token: ${{ inputs.token }}
