@@ -48,10 +48,29 @@ runs:
       env:
         COMMIT_MESSAGE: ${{ inputs.commit_message }}
       run: |
-        git config --global user.email "github@meblabs.com"
-        git config --global user.name "MeblabsBot"
-        git config --global pull.rebase true
+        branch="${GITHUB_REF#refs/heads/}"
+
+        git config user.email "github@meblabs.com"
+        git config user.name "MeblabsBot"
         git add --all
-        git diff-index --quiet HEAD || git commit -m "$COMMIT_MESSAGE"
-        git pull
-        git push
+        git diff --cached --quiet || git commit -m "$COMMIT_MESSAGE"
+
+        max_attempts=5
+
+        for ((attempt = 1; attempt <= max_attempts; attempt++)); do
+          git fetch origin "$branch"
+          git rebase FETCH_HEAD
+
+          if git push origin "HEAD:$branch"; then
+            exit 0
+          fi
+
+          if ((attempt == max_attempts)); then
+            echo "::error::Push failed after $max_attempts attempts"
+            exit 1
+          fi
+
+          delay=$((attempt * 2 + RANDOM % 4))
+          echo "Concurrent update detected; retrying in ${delay}s..."
+          sleep "$delay"
+        done
